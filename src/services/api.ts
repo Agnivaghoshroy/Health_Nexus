@@ -541,3 +541,5 @@ export const getEducationTopics = async (): Promise<EducationTopic[]> => {
         return []; // Return empty array on error
     }
 };
+
+// Big Taaks for today
