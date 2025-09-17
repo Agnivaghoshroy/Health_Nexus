@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assistant - Multilingual Healthcare Chatbot</title>
+    <style>
+        :root {
+            --font-size: 16px;
+            --background: #ffffff;
+            --foreground: #1a1a1a;
+            --card: #ffffff;
+            --card-foreground: #1a1a1a;
+            --primary: #3b82f6;
+            --primary-foreground: #ffffff;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #0f172a;
+            --muted: #f8fafc;
+            --muted-foreground: #64748b;
+            --accent: #f1f5f9;
+            --accent-foreground: #0f172a;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #e2e8f0;
+            --input: #f8fafc;
+            --ring: #3b82f6;
+            --radius: 0.625rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: var(--font-size);
+            background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+            color: var(--foreground);
+            min-height: 100vh;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .block { display: block !important; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .fixed { position: fixed; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-start { justify-content: flex-start; }
+        .justify-end { justify-content: flex-end; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .space-x-3 > * + * { margin-left: 0.75rem; }
+        .space-x-4 > * + * { margin-left: 1rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .w-full { width: 100%; }
+        .w-64 { width: 16rem; }
+        .w-10 { width: 2.5rem; }
+        .w-8 { width: 2rem; }
+        .w-6 { width: 1.5rem; }
+        .w-5 { width: 1.25rem; }
+        .w-4 { width: 1rem; }
+        .w-3 { width: 0.75rem; }
+        .w-2 { width: 0.5rem; }
+        .h-full { height: 100%; }
+        .h-64 { height: 16rem; }
+        .h-48 { height: 12rem; }
+        .h-16 { height: 4rem; }
+        .h-10 { height: 2.5rem; }
+        .h-8 { height: 2rem; }
+        .h-6 { height: 1.5rem; }
+        .h-5 { height: 1.25rem; }
+        .h-4 { height: 1rem; }
+        .h-3 { height: 0.75rem; }
+        .h-2 { height: 0.5rem; }
+        .max-w-7xl { max-width: 80rem; }
+        .max-w-md { max-width: 28rem; }
+        .max-w-xs { max-width: 20rem; }
+        .max-w-lg { max-width: 32rem; }
+        .min-h-screen { min-height: 100vh; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mr-3 { margin-right: 0.75rem; }
+        .ml-4 { margin-left: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .pl-10 { padding-left: 2.5rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-white { color: #ffffff; }
+        .text-gray-500 { color: #6b7280; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-900 { color: #111827; }
+        .text-blue-600 { color: #2563eb; }
+        .text-blue-700 { color: #1d4ed8; }
+        .text-green-700 { color: #15803d; }
+        .text-purple-700 { color: #7c3aed; }
+        .text-red-700 { color: #b91c1c; }
+        .text-red-800 { color: #991b1b; }
+        .text-yellow-700 { color: #a16207; }
+        .text-orange-700 { color: #c2410c; }
+        .bg-white { background-color: #ffffff; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .bg-green-50 { background-color: #f0fdf4; }
+        .bg-green-100 { background-color: #dcfce7; }
+        .bg-purple-50 { background-color: #faf5ff; }
+        .bg-red-50 { background-color: #fef2f2; }
+        .bg-red-100 { background-color: #fee2e2; }
+        .bg-red-500 { background-color: #ef4444; }
+        .bg-yellow-50 { background-color: #fefce8; }
+        .bg-yellow-100 { background-color: #fef3c7; }
+        .bg-orange-50 { background-color: #fff7ed; }
+        .bg-orange-100 { background-color: #ffedd5; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+        .from-blue-50 { --tw-gradient-from: #eff6ff; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(239 246 255 / 0)); }
+        .to-green-50 { --tw-gradient-to: #f0fdf4; }
+        .border { border-width: 1px; border-color: var(--border); }
+        .border-b { border-bottom-width: 1px; border-bottom-color: var(--border); }
+        .border-t { border-top-width: 1px; border-top-color: var(--border); }
+        .border-l-4 { border-left-width: 4px; }
+        .border-l-blue-500 { border-left-color: #3b82f6; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .border-red-200 { border-color: #fecaca; }
+        .border-red-300 { border-color: #fca5a5; }
+        .border-yellow-200 { border-color: #fde68a; }
+        .border-yellow-300 { border-color: #fcd34d; }
+        .border-orange-300 { border-color: #fdba74; }
+        .border-green-200 { border-color: #bbf7d0; }
+        .border-green-300 { border-color: #86efac; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-full { border-radius: 9999px; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .object-cover { object-fit: cover; }
+        .cursor-pointer { cursor: pointer; }
+        .transition-shadow { transition: box-shadow 0.15s ease-in-out; }
+        .transition-all { transition: all 0.15s ease-in-out; }
+        .overflow-y-auto { overflow-y: auto; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-col { flex-direction: column; }
+        .flex-row-reverse { flex-direction: row-reverse; }
+        .flex-wrap { flex-wrap: wrap; }
+
+        /* Component Styles */
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 0;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-ghost {
+            background-color: transparent;
+            color: var(--foreground);
+        }
+
+        .btn-ghost:hover {
+            background-color: var(--accent);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent);
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .input {
+            width: 100%;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border);
+            background-color: var(--input);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 2px rgb(59 130 246 / 0.5);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            padding: 0.125rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .badge-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+
+        .badge-destructive {
+            background-color: var(--destructive);
+            color: var(--destructive-foreground);
+        }
+
+        .select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .checkbox {
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+        }
+
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .md\:max-w-md { max-width: 28rem; }
+            .md\:max-w-lg { max-width: 32rem; }
+            .md\:block { display: block; }
+            .md\:hidden { display: none; }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:w-64 { width: 16rem; }
+            .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+            .lg\:flex-row { flex-direction: row; }
+            .lg\:block { display: block; }
+            .lg\:hidden { display: none; }
+            .lg\:max-w-lg { max-width: 32rem; }
+        }
+
+        @media (max-width: 767px) {
+            .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+            .sm\:block { display: block; }
+        }
+
+        /* Chat specific styles */
+        .chat-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            display: flex;
+            max-width: 70%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            margin-right: 0.5rem;
+        }
+
+        .message.bot .message-bubble {
+            background-color: var(--muted);
+            color: var(--foreground);
+            margin-left: 0.5rem;
+        }
+
+        .message-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background-color: var(--muted);
+        }
+
+        .message.bot .message-avatar {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--muted);
+            border-radius: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 2px;
+        }
+
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--muted-foreground);
+            animation: typing 1.4s ease-in-out infinite both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Notification dot */
+        .notification-dot {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
+
+        /* Animation classes */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Severity colors for badges */
+        .severity-low {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .severity-medium {
+            background-color: #fef3c7;
+            color: #a16207;
+            border-color: #fde68a;
+        }
+
+        .severity-high {
+            background-color: #ffedd5;
+            color: #c2410c;
+            border-color: #fdba74;
+        }
+
+        .severity-critical {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white icon" viewBox="0 0 24 24">
+                                    <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 id="app-title" class="text-xl font-semibold text-gray-900">Health Assistant</h1>
+                                <p id="app-subtitle" class="text-sm text-gray-600 hidden sm:block">Your trusted healthcare companion for rural communities</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:block">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-gray-500 icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                                <path d="M2 12h20"></path>
+                            </svg>
+                            <select id="language-select" class="input select w-32">
+                                <option value="en">English</option>
+                                <option value="hi">हिंदी</option>
+                                <option value="te">తెలుగు</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="mobile-menu-btn" class="btn btn-ghost md:hidden">
+                        <svg id="menu-icon" class="w-5 h-5 icon" viewBox="0 0 24 24">
+                            <line x1="4" x2="20" y1="6" y2="6"></line>
+                            <line x1="4" x2="20" y1="12" y2="12"></line>
+                            <line x1="4" x2="20" y1="18" y2="18"></line>
+                        </svg>
+                        <svg id="close-icon" class="w-5 h-5 icon hidden" viewBox="0 0 24 24">
+                            <path d="m18 6-12 12"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Sidebar Navigation -->
+                <div id="sidebar" class="lg:w-64 hidden lg:block">
+                    <div class="card p-4">
+                        <nav class="space-y-2">
+                            <button class="btn btn-primary w-full justify-start relative nav-btn active" data-tab="chat">
+                                <svg class="w-4 h-4 mr-3 icon" viewBox="0 0 24 24">
+                                    <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"></path>
+                                </svg>
+                                <span class="nav-label">Chat</span>
+                            </button>
+                            <button class="btn btn-ghost w-full justify-start nav-btn" data-tab="education">
+                                <svg class="w-4 h-4 mr-3 icon" viewBox="0 0 24 24">
+                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                                </svg>
+                                <span class="nav-label">Health Education</span>
+                            </button>
+                            <button class="btn btn-ghost w-full justify-start nav-btn" data-tab="vaccination">
+                                <svg class="w-4 h-4 mr-3 icon" viewBox="0 0 24 24">
+                                    <path d="M8 2v4"></path>
+                                    <path d="M16 2v4"></path>
+                                    <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                    <path d="M3 10h18"></path>
+                                </svg>
+                                <span class="nav-label">Vaccination</span>
+                            </button>
+                            <button class="btn btn-ghost w-full justify-start nav-btn" data-tab="symptoms">
+                                <svg class="w-4 h-4 mr-3 icon" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                <span class="nav-label">Symptoms</span>
+                            </button>
+                            <button class="btn btn-ghost w-full justify-start relative nav-btn" data-tab="alerts">
+                                <svg class="w-4 h-4 mr-3 icon" viewBox="0 0 24 24">
+                                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                </svg>
+                                <span class="nav-label">Alerts</span>
+                                <div id="alert-notification" class="notification-dot"></div>
+                            </button>
+                        </nav>
+
+                        <div class="mt-6 lg:hidden">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-500 icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                                    <path d="M2 12h20"></path>
+                                </svg>
+                                <select id="language-select-mobile" class="input select w-32">
+                                    <option value="en">English</option>
+                                    <option value="hi">हिंदी</option>
+                                    <option value="te">తెలుగు</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <div id="main-content">
+                        <!-- Chat Interface -->
+                        <div id="chat-tab" class="tab-content">
+                            <div class="card chat-container">
+                                <!-- Chat Header -->
+                                <div class="p-4 border-b border-gray-200 bg-blue-50">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white icon" viewBox="0 0 24 24">
+                                                <path d="M12 8V4H8a2 2 0 0 0-2 2v6c0 1 1 2 2 2h4v-4z"></path>
+                                                <path d="M16 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6c0-1 1-2 2-2h8v-2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900">Health Assistant</h3>
+                                            <p class="text-sm text-gray-600">Available 24/7</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Messages Container -->
+                                <div id="messages-container" class="messages-container">
+                                    <!-- Messages will be added here dynamically -->
+                                </div>
+
+                                <!-- Quick Questions (shown initially) -->
+                                <div id="quick-questions" class="p-4 border-t border-gray-200 bg-gray-50">
+                                    <p class="text-sm text-gray-600 mb-2">Common questions:</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <button class="btn btn-outline text-left p-2 quick-question-btn">What are COVID-19 symptoms?</button>
+                                        <button class="btn btn-outline text-left p-2 quick-question-btn">When should I get vaccinated?</button>
+                                        <button class="btn btn-outline text-left p-2 quick-question-btn">How to prevent malaria?</button>
+                                        <button class="btn btn-outline text-left p-2 quick-question-btn">What to do for fever?</button>
+                                    </div>
+                                </div>
+
+                                <!-- Chat Input -->
+                                <div class="p-4 border-t border-gray-200">
+                                    <div class="flex space-x-2">
+                                        <input id="chat-input" type="text" class="input flex-1" placeholder="Ask about symptoms, vaccines, health tips...">
+                                        <button id="send-btn" class="btn btn-primary">
+                                            <svg class="w-4 h-4 icon" viewBox="0 0 24 24">
+                                                <path d="m22 2-7 20-4-9-9-4Z"></path>
+                                                <path d="M22 2 11 13"></path>
+                                            </svg>
+                                            <span class="sr-only">Send</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Education Tab -->
+                        <div id="education-tab" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <div>
+                                    <h1 class="text-3xl mb-2">Health Education</h1>
+                                    <p class="text-gray-600">Learn about preventive healthcare and healthy living</p>
+                                </div>
+
+                                <!-- Category Filter -->
+                                <div class="flex flex-wrap gap-3">
+                                    <button class="btn btn-primary category-filter active" data-category="all">All Topics</button>
+                                    <button class="btn btn-outline category-filter" data-category="hygiene">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                        </svg>
+                                        Hygiene
+                                    </button>
+                                    <button class="btn btn-outline category-filter" data-category="nutrition">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path>
+                                        </svg>
+                                        Nutrition
+                                    </button>
+                                    <button class="btn btn-outline category-filter" data-category="maternal">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="m22 21-3.5-3.5"></path>
+                                            <path d="m17 21-3.5-3.5"></path>
+                                        </svg>
+                                        Maternal Health
+                                    </button>
+                                    <button class="btn btn-outline category-filter" data-category="prevention">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                                        </svg>
+                                        Prevention
+                                    </button>
+                                </div>
+
+                                <!-- Topics Grid -->
+                                <div id="topics-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <!-- Topics will be populated by JavaScript -->
+                                </div>
+
+                                <!-- Educational Banner -->
+                                <div class="card bg-gradient-to-r from-blue-50 to-green-50">
+                                    <div class="card-content p-6">
+                                        <div class="grid md:grid-cols-2 gap-6 items-center">
+                                            <div>
+                                                <h3 class="text-xl mb-3">Stay Informed, Stay Healthy</h3>
+                                                <p class="text-gray-600 mb-4">
+                                                    Regular health education helps prevent diseases and promotes 
+                                                    community wellness. Share this knowledge with your family and neighbors.
+                                                </p>
+                                                <button class="btn btn-primary">
+                                                    <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                        <polygon points="6,3 20,12 6,21 6,3"></polygon>
+                                                    </svg>
+                                                    Watch Video Tutorials
+                                                </button>
+                                            </div>
+                                            <div class="text-center">
+                                                <img src="https://images.unsplash.com/photo-1578307896780-d257213543a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHx2YWNjaW5hdGlvbiUyMG1lZGljYWwlMjBoZWFsdGh8ZW58MXx8fHwxNzU3MzQyNTI1fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" 
+                                                     alt="Health education" class="rounded-lg w-full h-48 object-cover">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vaccination Schedule Tab -->
+                        <div id="vaccination-tab" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <div>
+                                    <h1 class="text-3xl mb-2">Vaccination Schedule</h1>
+                                    <p class="text-gray-600">Stay up-to-date with recommended vaccinations</p>
+                                </div>
+
+                                <!-- Summary Cards -->
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-red-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-red-600 icon" viewBox="0 0 24 24">
+                                                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                        <path d="M12 9v4"></path>
+                                                        <path d="M12 17h.01"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Due</p>
+                                                    <p class="text-2xl">3</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-blue-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-blue-600 icon" viewBox="0 0 24 24">
+                                                        <path d="M8 2v4"></path>
+                                                        <path d="M16 2v4"></path>
+                                                        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                                        <path d="M3 10h18"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Next Due</p>
+                                                    <p class="text-lg">Jan 5, 2024</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <button class="btn btn-primary w-full">
+                                                <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                    <circle cx="12" cy="7" r="4"></circle>
+                                                </svg>
+                                                Find Vaccination Center
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="max-w-md">
+                                    <input id="vaccine-search" type="text" class="input w-full" placeholder="Search vaccines...">
+                                </div>
+
+                                <!-- Age Group Tabs -->
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="btn btn-primary age-group-btn active" data-age="infant">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M9 12h6l-3-3z"></path>
+                                            <path d="m9 21 3-3 3 3"></path>
+                                            <path d="M20 4v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                        Infants (0-2 years)
+                                    </button>
+                                    <button class="btn btn-outline age-group-btn" data-age="child">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        Children (2-18 years)
+                                    </button>
+                                    <button class="btn btn-outline age-group-btn" data-age="adult">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="m22 21-3.5-3.5"></path>
+                                            <path d="m17 21-3.5-3.5"></path>
+                                        </svg>
+                                        Adults (18+ years)
+                                    </button>
+                                    <button class="btn btn-outline age-group-btn" data-age="senior">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="m22 21-3.5-3.5"></path>
+                                            <path d="m17 21-3.5-3.5"></path>
+                                        </svg>
+                                        Seniors (60+ years)
+                                    </button>
+                                </div>
+
+                                <!-- Vaccines List -->
+                                <div id="vaccines-list" class="space-y-4">
+                                    <!-- Vaccine cards will be populated by JavaScript -->
+                                </div>
+
+                                <!-- Information Banner -->
+                                <div class="card bg-blue-50 border-blue-200">
+                                    <div class="card-content p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="p-2 bg-blue-100 rounded-lg">
+                                                <svg class="w-6 h-6 text-blue-600 icon" viewBox="0 0 24 24">
+                                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                    <path d="M12 9v4"></path>
+                                                    <path d="M12 17h.01"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="mb-2">Important Reminder</h3>
+                                                <p class="text-gray-700 text-sm">
+                                                    Vaccination schedules may vary based on individual health conditions. 
+                                                    Always consult with your healthcare provider for personalized vaccination advice. 
+                                                    This information is for educational purposes only.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Symptoms Checker Tab -->
+                        <div id="symptoms-tab" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <div>
+                                    <h1 class="text-3xl mb-2">Symptoms Checker</h1>
+                                    <p class="text-gray-600">Check your symptoms and get preliminary guidance</p>
+                                </div>
+
+                                <!-- Emergency Warning -->
+                                <div class="card border-red-300 bg-red-50">
+                                    <div class="card-content p-4">
+                                        <p class="text-red-800 text-sm text-center">🚨 Seek immediate medical attention if you experience severe symptoms</p>
+                                    </div>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="max-w-md">
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 icon" viewBox="0 0 24 24">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <path d="m21 21-4.35-4.35"></path>
+                                        </svg>
+                                        <input id="symptoms-search" type="text" class="input pl-10" placeholder="Search symptoms...">
+                                    </div>
+                                </div>
+
+                                <!-- Category Filter -->
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="btn btn-primary symptom-category-filter active" data-category="all">All Categories</button>
+                                    <button class="btn btn-outline symptom-category-filter" data-category="general">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M14 4.5V14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4.5a2.5 2.5 0 1 1 5 0V14h5V4.5a2.5 2.5 0 1 1 5 0z"></path>
+                                        </svg>
+                                        General
+                                    </button>
+                                    <button class="btn btn-outline symptom-category-filter" data-category="respiratory">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M9 12a4 4 0 1 1 8 0v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9a3 3 0 0 1 3-3"></path>
+                                            <path d="M8 21V10a3 3 0 0 1 3-3 4 4 0 0 1 4 4"></path>
+                                        </svg>
+                                        Respiratory
+                                    </button>
+                                    <button class="btn btn-outline symptom-category-filter" data-category="digestive">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"></path>
+                                        </svg>
+                                        Digestive
+                                    </button>
+                                    <button class="btn btn-outline symptom-category-filter" data-category="neurological">
+                                        <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path>
+                                            <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"></path>
+                                            <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"></path>
+                                            <path d="M17.599 6.5a3 3 0 0 0 .399-1.375"></path>
+                                            <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"></path>
+                                            <path d="M3.477 10.896a4 4 0 0 1 .585-.396"></path>
+                                            <path d="M19.938 10.5a4 4 0 0 1 .585.396"></path>
+                                            <path d="M6 18a4 4 0 0 1-1.967-.516"></path>
+                                            <path d="M19.967 17.484A4 4 0 0 1 18 18"></path>
+                                        </svg>
+                                        Neurological
+                                    </button>
+                                </div>
+
+                                <!-- Symptoms Selection -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Select your symptoms:</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <div id="symptoms-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <!-- Symptoms will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Selected Symptoms Summary -->
+                                <div id="selected-symptoms-summary" class="card hidden">
+                                    <div class="card-content p-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm text-gray-600">Selected symptoms (<span id="selected-count">0</span>):</p>
+                                                <div id="selected-symptoms-list" class="flex flex-wrap gap-2 mt-2">
+                                                    <!-- Selected symptoms badges will appear here -->
+                                                </div>
+                                            </div>
+                                            <button id="check-symptoms-btn" class="btn btn-primary">
+                                                Check Symptoms
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Results Panel -->
+                                <div id="symptoms-results" class="hidden">
+                                    <!-- Results will be populated by JavaScript -->
+                                </div>
+
+                                <!-- Disclaimer -->
+                                <div class="card bg-gray-50">
+                                    <div class="card-content p-4">
+                                        <div class="flex items-start space-x-3">
+                                            <svg class="w-5 h-5 text-gray-600 mt-0.5 icon" viewBox="0 0 24 24">
+                                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                <path d="M12 9v4"></path>
+                                                <path d="M12 17h.01"></path>
+                                            </svg>
+                                            <div>
+                                                <h4 class="text-gray-800 mb-1">Disclaimer</h4>
+                                                <p class="text-sm text-gray-600">This tool provides general information only and is not a substitute for professional medical advice. Consult a healthcare provider for proper diagnosis and treatment.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerts Tab -->
+                        <div id="alerts-tab" class="tab-content hidden">
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h1 class="text-3xl mb-2">Health Alerts</h1>
+                                        <p class="text-gray-600">Real-time health notifications and outbreak updates</p>
+                                    </div>
+                                    <button id="mark-all-read-btn" class="btn btn-outline">
+                                        Mark All as Read
+                                    </button>
+                                </div>
+
+                                <!-- Summary Cards -->
+                                <div class="grid md:grid-cols-4 gap-4">
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-red-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-red-600 icon" viewBox="0 0 24 24">
+                                                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                        <path d="M12 9v4"></path>
+                                                        <path d="M12 17h.01"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Critical</p>
+                                                    <p class="text-2xl">1</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-orange-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-orange-600 icon" viewBox="0 0 24 24">
+                                                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Unread</p>
+                                                    <p class="text-2xl" id="unread-count">3</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-yellow-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-yellow-600 icon" viewBox="0 0 24 24">
+                                                        <path d="m13 2-2 2.5h3L12 7l-1.5-1.5L8 7l1.5 1.5L8 10l1.5-1.5L12 10l1.5-1.5L16 10l-1.5-1.5L16 7l-1.5 1.5z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Action Required</p>
+                                                    <p class="text-2xl">2</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-content p-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-blue-100 rounded-lg">
+                                                    <svg class="w-5 h-5 text-blue-600 icon" viewBox="0 0 24 24">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <path d="M12 6v6l4 2"></path>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-sm text-gray-600">Total Alerts</p>
+                                                    <p class="text-2xl">5</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Filters -->
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm text-gray-600">Filter by:</span>
+                                        <button class="btn btn-primary btn-sm alert-filter active" data-filter="all">All Alerts</button>
+                                        <button class="btn btn-outline btn-sm alert-filter" data-filter="unread">Unread (3)</button>
+                                    </div>
+
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="btn btn-outline btn-sm alert-type-filter" data-type="outbreak">
+                                            <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                                <path d="M12 9v4"></path>
+                                                <path d="M12 17h.01"></path>
+                                            </svg>
+                                            Disease Outbreaks
+                                        </button>
+                                        <button class="btn btn-outline btn-sm alert-type-filter" data-type="weather">
+                                            <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                                            </svg>
+                                            Weather Health
+                                        </button>
+                                        <button class="btn btn-outline btn-sm alert-type-filter" data-type="vaccination">
+                                            <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                <path d="m13 2-2 2.5h3L12 7l-1.5-1.5L8 7l1.5 1.5L8 10l1.5-1.5L12 10l1.5-1.5L16 10l-1.5-1.5L16 7l-1.5 1.5z"></path>
+                                            </svg>
+                                            Vaccination
+                                        </button>
+                                        <button class="btn btn-outline btn-sm alert-type-filter" data-type="emergency">
+                                            <svg class="w-4 h-4 mr-2 icon" viewBox="0 0 24 24">
+                                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                            </svg>
+                                            Emergency
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Alerts List -->
+                                <div id="alerts-list" class="space-y-4">
+                                    <!-- Alerts will be populated by JavaScript -->
+                                </div>
+
+                                <!-- Last Updated -->
+                                <div class="text-center text-sm text-gray-500">
+                                    Last updated: <span id="last-updated"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section for Chat Tab -->
+        <div id="hero-section" class="bg-white border-t border-gray-200 mt-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-3xl mb-4">Accessible Healthcare Information</h2>
+                        <p class="text-gray-600 mb-6">
+                            Get instant answers to your health questions, learn about preventive care, 
+                            and stay updated with vaccination schedules - all in your preferred language.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="bg-blue-50 px-4 py-2 rounded-lg">
+                                <span class="text-blue-700">24/7 Available</span>
+                            </div>
+                            <div class="bg-green-50 px-4 py-2 rounded-lg">
+                                <span class="text-green-700">Multilingual Support</span>
+                            </div>
+                            <div class="bg-purple-50 px-4 py-2 rounded-lg">
+                                <span class="text-purple-700">Trusted Information</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1589104759909-e355f8999f7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwZG9jdG9yJTIwcnVyYWwlMjBjb21tdW5pdHl8ZW58MXx8fHwxNzU3MzQyNTIyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" 
+                             alt="Healthcare in rural community" class="rounded-lg shadow-lg w-full h-64 object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentLanguage = 'en';
+        let activeTab = 'chat';
+        let isMobileMenuOpen = false;
+        let hasNewAlerts = true;
+        let chatMessages = [];
+        let selectedSymptoms = [];
+        let selectedTopicCategory = 'all';
+        let selectedVaccineAgeGroup = 'infant';
+        let alertsData = [];
+
+        // Translations
+        const translations = {
+            en: {
+                title: 'Health Assistant',
+                subtitle: 'Your trusted healthcare companion for rural communities',
+                chat: 'Chat',
+                education: 'Health Education',
+                vaccination: 'Vaccination',
+                symptoms: 'Symptoms',
+                alerts: 'Alerts',
+                menu: 'Menu',
+                welcome: "Hello! I'm your health assistant. Ask me about symptoms, preventive care, vaccinations, or any health concerns.",
+                placeholder: "Ask about symptoms, vaccines, health tips...",
+                send: "Send",
+                typing: "Health Assistant is typing...",
+                commonQuestions: [
+                    "What are COVID-19 symptoms?",
+                    "When should I get vaccinated?",
+                    "How to prevent malaria?",
+                    "What to do for fever?"
+                ]
+            },
+            hi: {
+                title: 'स्वास्थ्य सहायक',
+                subtitle: 'ग्रामीण समुदायों के लिए आपका विश्वसनीय स्वास्थ्य साथी',
+                chat: 'चैट',
+                education: 'स्वास्थ्य शिक्षा',
+                vaccination: 'टीकाकरण',
+                symptoms: 'लक्षण',
+                alerts: 'अलर्ट',
+                menu: 'मेनू',
+                welcome: "नमस्ते! मैं आपका स्वास्थ्य सहायक हूँ। मुझसे लक्षण, बचाव, टीकाकरण या किसी भी स्वास्थ्य समस्या के बारे में पूछें।",
+                placeholder: "लक्षण, टीके, स्वास्थ्य सुझाव के बारे में पूछें...",
+                send: "भेजें",
+                typing: "स्वास्थ्य सहायक टाइप कर रहा है...",
+                commonQuestions: [
+                    "कोविड-19 के लक्षण क्या हैं?",
+                    "मुझे कब टीका लगवाना चाहिए?",
+                    "मलेरिया से कैसे बचें?",
+                    "बुखार में क्या करें?"
+                ]
+            },
+            te: {
+                title: 'ఆరోగ్య సహాయకుడు',
+                subtitle: 'గ్రామీణ సమాజాలకు మీ నమ్మకమైన ఆరోగ్య సహచరుడు',
+                chat: 'చాట్',
+                education: 'ఆరోగ్య విద్య',
+                vaccination: 'టీకాలు',
+                symptoms: 'లక్షణాలు',
+                alerts: 'హెచ్చరికలు',
+                menu: 'మెనూ',
+                welcome: "నమస్కారం! నేను మీ ఆరోగ్య సహాయకుడిని। లక్షణాలు, నివారణ, టీకాలు లేదా ఏదైనా ఆరోగ్య సమస్యల గురించి నన్ను అడగండి।",
+                placeholder: "లక్షణాలు, టీకాలు, ఆరోగ్య చిట్కాల గురించి అడగండి...",
+                send: "పంపండి",
+                typing: "ఆరోగ్య సహాయకుడు టైప్ చేస్తున్నాడు...",
+                commonQuestions: [
+                    "కోవిడ్-19 లక్షణాలు ఏమిటి?",
+                    "నేను ఎప్పుడు టీకా వేయించుకోవాలి?",
+                    "మలేరియా నుండి ఎలా కాపాడుకోవాలి?",
+                    "జ్వరం వచ్చినప్పుడు ఏం చేయాలి?"
+                ]
+            }
+        };
+
+        // Mock AI responses
+        const mockResponses = {
+            en: {
+                fever: "For fever: 1) Rest and drink plenty of fluids 2) Use fever-reducing medication if needed 3) See a doctor if fever persists over 3 days or is very high 4) Monitor for other symptoms like difficulty breathing or severe headache.",
+                covid: "COVID-19 symptoms include: fever, cough, shortness of breath, loss of taste/smell, fatigue, body aches. If you have symptoms, isolate immediately and get tested. Severe symptoms require immediate medical attention.",
+                malaria: "Prevent malaria by: 1) Using bed nets 2) Wearing long sleeves at dusk/dawn 3) Using repellent 4) Removing standing water 5) Getting prompt treatment for fever in malaria areas.",
+                vaccination: "Vaccination schedules vary by age. For adults: annual flu shots, COVID boosters as recommended, tetanus every 10 years. Consult your local health center for personalized advice.",
+                default: "I understand your concern. For specific medical advice, please consult with a qualified healthcare provider. I can provide general health information and preventive care tips."
+            },
+            hi: {
+                fever: "बुखार के लिए: 1) आराम करें और खूब पानी पिएं 2) जरूरत पड़ने पर बुखार कम करने की दवा लें 3) यदि बुखार 3 दिन से अधिक रहे या बहुत तेज हो तो डॉक्टर से मिलें 4) सांस लेने में दिक्कत या तेज सिरदर्द जैसे अन्य लक्षणों पर नजर रखें।",
+                covid: "कोविड-19 के लक्षण: बुखार, खांसी, सांस लेने में दिक्कत, स्वाद/गंध का चले जाना, थकान, शरीर में दर्द। लक्षण होने पर तुरंत अलग रहें और टेस्ट कराएं।",
+                malaria: "मलेरिया से बचाव: 1) मच्छरदानी का इस्तेमाल 2) शाम/सुबह फुल बाजू के कपड़े पहनें 3) मच्छर भगाने वाली क्रीम लगाएं 4) रुका हुआ पानी हटाएं।",
+                vaccination: "टीकाकरण उम्र के अनुसार अलग होता है। वयस्कों के लिए: सालाना फ्लू का टीका, कोविड बूस्टर। स्थानीय स्वास्थ्य केंद्र से सलाह लें।",
+                default: "मैं आपकी चिंता समझता हूं। विशिष्ट चिकित्सा सलाह के लिए योग्य डॉक्टर से मिलें। मैं सामान्य स्वास्थ्य जानकारी प्रदान कर सकता हूं।"
+            },
+            te: {
+                fever: "జ్వరానికి: 1) విశ్రాంతి తీసుకోండి మరియు చాలా నీళ్లు త్రాగండి 2) అవసరమైతే జ్వరం తగ్గించే మందులు వాడండి 3) జ్వరం 3 రోజులకు మించి ఉంటే లేదా చాలా ఎక్కువగా ఉంటే వైద్యుడిని కలవండి।",
+                covid: "కోవిడ్-19 లక్షణాలు: జ్వరం, దగ్గు, ఊపిరి ఆడకపోవడం, రుచి/వాసన పోవడం, అలసట, శరీర నొప్పులు। లక్షణాలు ఉంటే వెంటనే వేరుగా ఉండి పరీక్ష చేయించుకోండి।",
+                malaria: "మలేరియా నివారణ: 1) దోమల వలలు వాడండి 2) సాయంత్రం/తెల్లవారుజామున పూర్తి చేతుల దుస్తులు వేసుకోండి 3) దోమల నివారిణి వాడండi।",
+                vaccination: "టీకాల షెడ్యూల్ వయస్సు బట్టి మారుతుంది। పెద్దలకు: వార్షిక ఫ్లూ షాట్లు, కోవిడ్ బూస్టర్లు। వ్యక్తిగత సలహా కోసం స్థానిక ఆరోగ్య కేంద్రాన్ని సంప్రదించండి।",
+                default: "మీ ఆందోళన అర్థమైంది। నిర్దిష్ట వైద్య సలహా కోసం అర్హత కలిగిన వైద్యుడిని సంప్రదించండి। నేను సాధారణ ఆరోగ్య సమాచారం అందించగలను।"
+            }
+        };
+
+        // Health topics data
+        const healthTopics = [
+            {
+                id: 'handwashing',
+                category: 'hygiene',
+                title: 'Proper Hand Washing',
+                description: 'Learn the correct technique to wash hands and prevent infections',
+                duration: '3 min read',
+                content: 'Wash hands with soap and water for at least 20 seconds. Scrub all surfaces including back of hands, between fingers, and under nails. Use alcohol-based sanitizer when soap is not available.'
+            },
+            {
+                id: 'nutrition',
+                category: 'nutrition',
+                title: 'Balanced Diet Basics',
+                description: 'Understanding essential nutrients and healthy eating habits',
+                duration: '5 min read',
+                content: 'A balanced diet includes fruits, vegetables, whole grains, proteins, and healthy fats. Eat 5 servings of fruits and vegetables daily. Limit processed foods, sugar, and excessive salt.'
+            },
+            {
+                id: 'exercise',
+                category: 'prevention',
+                title: 'Daily Physical Activity',
+                description: 'Simple exercises you can do at home to stay healthy',
+                duration: '4 min read',
+                content: 'Aim for 150 minutes of moderate exercise weekly. Walking, stretching, and basic bodyweight exercises help maintain health. Start slowly and gradually increase intensity.'
+            },
+            {
+                id: 'pregnancy',
+                category: 'maternal',
+                title: 'Prenatal Care Essentials',
+                description: 'Important steps for a healthy pregnancy',
+                duration: '6 min read',
+                content: 'Regular check-ups, proper nutrition with folic acid, avoiding alcohol and smoking, and getting adequate rest are crucial for maternal and baby health.'
+            }
+        ];
+
+        // Vaccine data
+        const vaccineData = {
+            infant: [
+                {
+                    name: 'BCG',
+                    description: 'Protects against tuberculosis',
+                    age: 'At birth',
+                    status: 'completed',
+                    nextDue: null
+                },
+                {
+                    name: 'Hepatitis B',
+                    description: 'Protects against Hepatitis B virus',
+                    age: 'At birth, 6 weeks, 6 months',
+                    status: 'due',
+                    nextDue: '2024-01-15'
+                },
+                {
+                    name: 'DPT',
+                    description: 'Protects against Diphtheria, Pertussis, Tetanus',
+                    age: '6, 10, 14 weeks',
+                    status: 'upcoming',
+                    nextDue: '2024-02-01'
+                },
+                {
+                    name: 'MMR',
+                    description: 'Protects against Measles, Mumps, Rubella',
+                    age: '12-15 months',
+                    status: 'upcoming',
+                    nextDue: '2024-06-15'
+                }
+            ],
+            child: [
+                {
+                    name: 'DPT Booster',
+                    description: 'Booster dose for continued protection',
+                    age: '4-6 years',
+                    status: 'due',
+                    nextDue: '2024-01-20'
+                },
+                {
+                    name: 'MMR Booster',
+                    description: 'Second dose of MMR vaccine',
+                    age: '4-6 years',
+                    status: 'upcoming',
+                    nextDue: '2024-03-01'
+                }
+            ],
+            adult: [
+                {
+                    name: 'COVID-19',
+                    description: 'Protects against COVID-19',
+                    age: 'Annual booster',
+                    status: 'due',
+                    nextDue: '2024-01-10'
+                },
+                {
+                    name: 'Influenza',
+                    description: 'Annual flu vaccination',
+                    age: 'Yearly',
+                    status: 'due',
+                    nextDue: '2024-01-05'
+                },
+                {
+                    name: 'Tetanus',
+                    description: 'Tetanus booster shot',
+                    age: 'Every 10 years',
+                    status: 'upcoming',
+                    nextDue: '2024-08-15'
+                }
+            ],
+            senior: [
+                {
+                    name: 'Pneumococcal',
+                    description: 'Protects against pneumococcal disease',
+                    age: '65+ years',
+                    status: 'due',
+                    nextDue: '2024-01-12'
+                },
+                {
+                    name: 'Shingles',
+                    description: 'Protects against shingles (zoster)',
+                    age: '60+ years',
+                    status: 'upcoming',
+                    nextDue: '2024-04-01'
+                }
+            ]
+        };
+
+        // Symptoms data
+        const symptomsData = {
+            general: [
+                { name: 'Fever', severity: 'moderate', category: 'general' },
+                { name: 'Fatigue', severity: 'mild', category: 'general' },
+                { name: 'Body aches', severity: 'mild', category: 'general' },
+                { name: 'Chills', severity: 'moderate', category: 'general' },
+                { name: 'Loss of appetite', severity: 'mild', category: 'general' }
+            ],
+            respiratory: [
+                { name: 'Cough', severity: 'mild', category: 'respiratory' },
+                { name: 'Shortness of breath', severity: 'severe', category: 'respiratory' },
+                { name: 'Chest pain', severity: 'severe', category: 'respiratory' },
+                { name: 'Sore throat', severity: 'mild', category: 'respiratory' },
+                { name: 'Runny nose', severity: 'mild', category: 'respiratory' }
+            ],
+            digestive: [
+                { name: 'Nausea', severity: 'mild', category: 'digestive' },
+                { name: 'Vomiting', severity: 'moderate', category: 'digestive' },
+                { name: 'Diarrhea', severity: 'moderate', category: 'digestive' },
+                { name: 'Stomach pain', severity: 'moderate', category: 'digestive' },
+                { name: 'Loss of taste', severity: 'mild', category: 'digestive' }
+            ],
+            neurological: [
+                { name: 'Headache', severity: 'mild', category: 'neurological' },
+                { name: 'Dizziness', severity: 'moderate', category: 'neurological' },
+                { name: 'Confusion', severity: 'severe', category: 'neurological' },
+                { name: 'Seizures', severity: 'severe', category: 'neurological' },
+                { name: 'Memory problems', severity: 'moderate', category: 'neurological' }
+            ]
+        };
+
+        // Mock alerts data
+        const mockAlerts = [
+            {
+                id: '1',
+                type: 'outbreak',
+                severity: 'high',
+                title: 'Dengue Outbreak Alert',
+                description: 'Increased dengue cases reported in the region. Take preventive measures against mosquito breeding.',
+                location: 'Central District',
+                timestamp: new Date('2024-01-08T10:30:00'),
+                isRead: false,
+                actionRequired: true
+            },
+            {
+                id: '2',
+                type: 'weather',
+                severity: 'medium',
+                title: 'Heat Wave Warning',
+                description: 'Extreme temperatures expected. Stay hydrated and avoid outdoor activities during peak hours.',
+                location: 'All Districts',
+                timestamp: new Date('2024-01-07T08:15:00'),
+                isRead: false,
+                actionRequired: false
+            },
+            {
+                id: '3',
+                type: 'vaccination',
+                severity: 'low',
+                title: 'COVID-19 Booster Campaign',
+                description: 'Free COVID-19 booster shots available at local health centers for eligible population.',
+                location: 'Health Centers',
+                timestamp: new Date('2024-01-06T14:20:00'),
+                isRead: true,
+                actionRequired: true
+            },
+            {
+                id: '4',
+                type: 'emergency',
+                severity: 'critical',
+                title: 'Water Contamination Alert',
+                description: 'Water supply contamination detected. Boil water before drinking until further notice.',
+                location: 'North District',
+                timestamp: new Date('2024-01-05T16:45:00'),
+                isRead: false,
+                actionRequired: true
+            },
+            {
+                id: '5',
+                type: 'outbreak',
+                severity: 'medium',
+                title: 'Seasonal Flu Update',
+                description: 'Flu activity is elevated. Get vaccinated and practice good hygiene to prevent spread.',
+                location: 'Region-wide',
+                timestamp: new Date('2024-01-04T09:00:00'),
+                isRead: true,
+                actionRequired: false
+            }
+        ];
+
+        // Helper functions
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+            
+            if (diffInHours < 1) return 'Just now';
+            if (diffInHours < 24) return `${diffInHours}h ago`;
+            return `${Math.floor(diffInHours / 24)}d ago`;
+        }
+
+        function getResponse(userMessage, language) {
+            const message = userMessage.toLowerCase();
+            const responses = mockResponses[language];
+
+            if (message.includes('fever') || message.includes('बुखार') || message.includes('జ్వరం')) {
+                return responses.fever;
+            }
+            if (message.includes('covid') || message.includes('कोविड') || message.includes('కోవిడ్')) {
+                return responses.covid;
+            }
+            if (message.includes('malaria') || message.includes('मलेरिया') || message.includes('మలేరియా')) {
+                return responses.malaria;
+            }
+            if (message.includes('vaccin') || message.includes('टीका') || message.includes('టీకా')) {
+                return responses.vaccination;
+            }
+            
+            return responses.default;
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            
+            document.getElementById('app-title').textContent = t.title;
+            document.getElementById('app-subtitle').textContent = t.subtitle;
+            
+            // Update navigation labels
+            const navLabels = document.querySelectorAll('.nav-label');
+            const navKeys = ['chat', 'education', 'vaccination', 'symptoms', 'alerts'];
+            navLabels.forEach((label, index) => {
+                if (navKeys[index]) {
+                    label.textContent = t[navKeys[index]];
+                }
+            });
+
+            // Update chat interface
+            document.getElementById('chat-input').placeholder = t.placeholder;
+            
+            // Update quick questions
+            const quickQuestionBtns = document.querySelectorAll('.quick-question-btn');
+            quickQuestionBtns.forEach((btn, index) => {
+                if (t.commonQuestions[index]) {
+                    btn.textContent = t.commonQuestions[index];
+                }
+            });
+
+            // Re-add welcome message
+            if (chatMessages.length === 0) {
+                addMessage(t.welcome, true);
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update active tab
+            activeTab = tabName;
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show active tab
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('btn-primary', 'active');
+                btn.classList.add('btn-ghost');
+            });
+            
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.remove('btn-ghost');
+                activeBtn.classList.add('btn-primary', 'active');
+            }
+            
+            // Hide/show hero section
+            const heroSection = document.getElementById('hero-section');
+            if (tabName === 'chat') {
+                heroSection.classList.remove('hidden');
+            } else {
+                heroSection.classList.add('hidden');
+            }
+
+            // Clear alert notification when viewing alerts
+            if (tabName === 'alerts') {
+                hasNewAlerts = false;
+                document.getElementById('alert-notification').style.display = hasNewAlerts ? 'block' : 'none';
+            }
+
+            // Load tab-specific content
+            loadTabContent(tabName);
+        }
+
+        function loadTabContent(tabName) {
+            switch (tabName) {
+                case 'education':
+                    loadHealthTopics();
+                    break;
+                case 'vaccination':
+                    loadVaccines();
+                    break;
+                case 'symptoms':
+                    loadSymptoms();
+                    break;
+                case 'alerts':
+                    loadAlerts();
+                    break;
+            }
+        }
+
+        function addMessage(text, isBot = false) {
+            const messagesContainer = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+            
+            const timestamp = new Date();
+            const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <svg class="w-4 h-4 icon" viewBox="0 0 24 24">
+                        ${isBot ? 
+                            '<path d="M12 8V4H8a2 2 0 0 0-2 2v6c0 1 1 2 2 2h4v-4z"></path><path d="M16 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6c0-1 1-2 2-2h8v-2z"></path>' :
+                            '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>'
+                        }
+                    </svg>
+                </div>
+                <div class="message-bubble">
+                    <p>${text}</p>
+                    <p class="text-xs mt-1 opacity-70">${timeString}</p>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            chatMessages.push({ text, isBot, timestamp });
+            
+            // Hide quick questions after first message
+            if (chatMessages.length > 1) {
+                const quickQuestions = document.getElementById('quick-questions');
+                if (quickQuestions) {
+                    quickQuestions.classList.add('hidden');
+                }
+            }
+        }
+
+        function sendMessage(text) {
+            if (!text.trim()) return;
+            
+            // Add user message
+            addMessage(text, false);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Simulate AI response delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = getResponse(text, currentLanguage);
+                addMessage(response, true);
+            }, 1500);
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('messages-container');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'message bot';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <svg class="w-4 h-4 icon" viewBox="0 0 24 24">
+                        <path d="M12 8V4H8a2 2 0 0 0-2 2v6c0 1 1 2 2 2h4v-4z"></path>
+                        <path d="M16 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6c0-1 1-2 2-2h8v-2z"></path>
+                    </svg>
+                </div>
+                <div class="typing-indicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 ml-2">${translations[currentLanguage].typing}</span>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function loadHealthTopics() {
+            const topicsGrid = document.getElementById('topics-grid');
+            topicsGrid.innerHTML = '';
+            
+            const filteredTopics = selectedTopicCategory === 'all' 
+                ? healthTopics 
+                : healthTopics.filter(topic => topic.category === selectedTopicCategory);
+                
+            filteredTopics.forEach(topic => {
+                const topicCard = document.createElement('div');
+                topicCard.className = 'card cursor-pointer hover:shadow-md transition-shadow';
+                topicCard.innerHTML = `
+                    <div class="card-header">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600 icon" viewBox="0 0 24 24">
+                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                                </svg>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 icon" viewBox="0 0 24 24">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">${topic.title}</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="text-gray-600 text-sm mb-3">${topic.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="badge badge-secondary">${topic.duration}</span>
+                            <span class="badge bg-blue-100 text-blue-700">${topic.category}</span>
+                        </div>
+                    </div>
+                `;
+                
+                topicCard.addEventListener('click', () => {
+                    alert(`${topic.title}\n\n${topic.content}`);
+                });
+                
+                topicsGrid.appendChild(topicCard);
+            });
+        }
+
+        function loadVaccines() {
+            const vaccinesList = document.getElementById('vaccines-list');
+            vaccinesList.innerHTML = '';
+            
+            const vaccines = vaccineData[selectedVaccineAgeGroup] || [];
+            
+            vaccines.forEach(vaccine => {
+                const statusClass = vaccine.status === 'completed' ? 'severity-low' : 
+                                  vaccine.status === 'due' ? 'severity-critical' : 'severity-medium';
+                
+                const vaccineCard = document.createElement('div');
+                vaccineCard.className = 'card hover:shadow-md transition-shadow';
+                vaccineCard.innerHTML = `
+                    <div class="card-content p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg">${vaccine.name}</h3>
+                                    <span class="badge ${statusClass}">
+                                        ${vaccine.status.charAt(0).toUpperCase() + vaccine.status.slice(1)}
+                                    </span>
+                                </div>
+                                
+                                <p class="text-gray-600 text-sm mb-2">${vaccine.description}</p>
+                                
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <div class="flex items-center space-x-1">
+                                        <svg class="w-4 h-4 icon" viewBox="0 0 24 24">
+                                            <path d="M8 2v4"></path>
+                                            <path d="M16 2v4"></path>
+                                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                            <path d="M3 10h18"></path>
+                                        </svg>
+                                        <span>${vaccine.age}</span>
+                                    </div>
+                                    ${vaccine.nextDue ? `
+                                        <div class="flex items-center space-x-1">
+                                            <svg class="w-4 h-4 icon" viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12,6 12,12 16,14"></polyline>
+                                            </svg>
+                                            <span>Due: ${new Date(vaccine.nextDue).toLocaleDateString()}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-2 ml-4">
+                                <button class="btn btn-outline btn-sm">View Details</button>
+                                ${vaccine.status !== 'completed' ? 
+                                    '<button class="btn btn-primary btn-sm">Set Reminder</button>' : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                vaccinesList.appendChild(vaccineCard);
+            });
+        }
+
+        function loadSymptoms() {
+            const symptomsGrid = document.getElementById('symptoms-grid');
+            symptomsGrid.innerHTML = '';
+            
+            const allSymptoms = Object.values(symptomsData).flat();
+            
+            allSymptoms.forEach(symptom => {
+                const severityClass = `severity-${symptom.severity}`;
+                
+                const symptomDiv = document.createElement('div');
+                symptomDiv.className = 'flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer';
+                symptomDiv.innerHTML = `
+                    <input type="checkbox" class="checkbox symptom-checkbox" data-symptom="${symptom.name}">
+                    <div class="flex-1">
+                        <p class="text-sm">${symptom.name}</p>
+                        <span class="badge ${severityClass}">${symptom.severity}</span>
+                    </div>
+                `;
+                
+                symptomDiv.addEventListener('click', (e) => {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = symptomDiv.querySelector('.symptom-checkbox');
+                        checkbox.checked = !checkbox.checked;
+                        handleSymptomToggle(checkbox);
+                    }
+                });
+                
+                const checkbox = symptomDiv.querySelector('.symptom-checkbox');
+                checkbox.addEventListener('change', () => handleSymptomToggle(checkbox));
+                
+                symptomsGrid.appendChild(symptomDiv);
+            });
+        }
+
+        function handleSymptomToggle(checkbox) {
+            const symptomName = checkbox.dataset.symptom;
+            
+            if (checkbox.checked) {
+                if (!selectedSymptoms.includes(symptomName)) {
+                    selectedSymptoms.push(symptomName);
+                }
+            } else {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== symptomName);
+            }
+            
+            updateSelectedSymptomsDisplay();
+        }
+
+        function updateSelectedSymptomsDisplay() {
+            const summary = document.getElementById('selected-symptoms-summary');
+            const countSpan = document.getElementById('selected-count');
+            const listDiv = document.getElementById('selected-symptoms-list');
+            
+            if (selectedSymptoms.length > 0) {
+                summary.classList.remove('hidden');
+                countSpan.textContent = selectedSymptoms.length;
+                listDiv.innerHTML = selectedSymptoms.map(symptom => 
+                    `<span class="badge badge-secondary">${symptom}</span>`
+                ).join('');
+            } else {
+                summary.classList.add('hidden');
+            }
+        }
+
+        function analyzeSymptoms() {
+            if (selectedSymptoms.length === 0) return;
+            
+            const symptoms = selectedSymptoms.map(s => s.toLowerCase());
+            let severity = 'mild';
+            let conditions = [];
+            
+            // Simple pattern matching
+            if (symptoms.includes('fever') && symptoms.includes('cough')) {
+                conditions.push('Common cold or flu');
+                severity = 'moderate';
+            }
+            if (symptoms.includes('fever') && symptoms.includes('body aches')) {
+                conditions.push('Viral infection');
+                severity = 'moderate';
+            }
+            if (symptoms.includes('shortness of breath') || symptoms.includes('chest pain')) {
+                severity = 'severe';
+            }
+            if (symptoms.includes('confusion') || symptoms.includes('seizures')) {
+                severity = 'severe';
+            }
+            
+            if (conditions.length === 0) {
+                conditions.push('General illness - consult healthcare provider');
+            }
+            
+            showSymptomsResults(severity, conditions);
+        }
+
+        function showSymptomsResults(severity, conditions) {
+            const resultsDiv = document.getElementById('symptoms-results');
+            const severityClass = `severity-${severity}`;
+            
+            const recommendations = {
+                mild: 'Monitor symptoms and rest. Drink plenty of fluids.',
+                moderate: 'Consider consulting a healthcare provider if symptoms persist.',
+                severe: 'Seek immediate medical attention.'
+            };
+            
+            resultsDiv.innerHTML = `
+                <div class="card border-2 ${severityClass}">
+                    <div class="card-header">
+                        <h3 class="card-title flex items-center space-x-2">
+                            <svg class="w-5 h-5 icon" viewBox="0 0 24 24">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                <path d="M12 9v4"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                            <span>Assessment Results</span>
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-2">Selected symptoms:</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${selectedSymptoms.map(symptom => `<span class="badge badge-secondary">${symptom}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-gray-600 mb-2">Severity level:</p>
+                                <span class="badge ${severityClass}">${severity.charAt(0).toUpperCase() + severity.slice(1)}</span>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-gray-600 mb-2">Possible conditions:</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${conditions.map(condition => `<li class="text-sm">${condition}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <h4 class="mb-2">Recommendation:</h4>
+                                <p class="text-sm">${recommendations[severity]}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" onclick="backToSymptoms()">
+                    ← Back to Checker
+                </button>
+            `;
+            
+            resultsDiv.classList.remove('hidden');
+            document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function backToSymptoms() {
+            document.getElementById('symptoms-results').classList.add('hidden');
+        }
+
+        function loadAlerts() {
+            alertsData = [...mockAlerts];
+            renderAlerts();
+            updateAlertsStats();
+            
+            // Update last updated time
+            document.getElementById('last-updated').textContent = new Date().toLocaleString();
+        }
+
+        function renderAlerts() {
+            const alertsList = document.getElementById('alerts-list');
+            alertsList.innerHTML = '';
+            
+            alertsData.forEach(alert => {
+                const severityClass = `severity-${alert.severity}`;
+                const alertCard = document.createElement('div');
+                alertCard.className = `card cursor-pointer transition-all hover:shadow-md ${!alert.isRead ? 'border-l-4 border-l-blue-500 bg-blue-50' : ''}`;
+                
+                alertCard.innerHTML = `
+                    <div class="card-content p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="p-2 bg-${alert.severity === 'critical' ? 'red' : alert.severity === 'high' ? 'orange' : alert.severity === 'medium' ? 'yellow' : 'blue'}-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-${alert.severity === 'critical' ? 'red' : alert.severity === 'high' ? 'orange' : alert.severity === 'medium' ? 'yellow' : 'blue'}-600 icon" viewBox="0 0 24 24">
+                                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                                        <path d="M12 9v4"></path>
+                                        <path d="M12 17h.01"></path>
+                                    </svg>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <h3 class="${!alert.isRead ? 'font-semibold' : ''}">${alert.title}</h3>
+                                        ${!alert.isRead ? '<div class="w-2 h-2 bg-blue-500 rounded-full"></div>' : ''}
+                                    </div>
+                                    
+                                    <p class="text-gray-600 text-sm mb-3">${alert.description}</p>
+                                    
+                                    <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                        <div class="flex items-center space-x-1">
+                                            <svg class="w-3 h-3 icon" viewBox="0 0 24 24">
+                                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <span>${alert.location}</span>
+                                        </div>
+                                        <div class="flex items-center space-x-1">
+                                            <svg class="w-3 h-3 icon" viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12,6 12,12 16,14"></polyline>
+                                            </svg>
+                                            <span>${formatTimeAgo(alert.timestamp)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col items-end space-y-2">
+                                <span class="badge ${severityClass}">
+                                    ${alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}
+                                </span>
+                                
+                                ${alert.actionRequired ? '<span class="badge badge-destructive">Action Required</span>' : ''}
+                                
+                                <button class="btn btn-outline btn-sm">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                alertCard.addEventListener('click', () => {
+                    if (!alert.isRead) {
+                        alert.isRead = true;
+                        renderAlerts();
+                        updateAlertsStats();
+                        updateAlertNotification();
+                    }
+                });
+                
+                alertsList.appendChild(alertCard);
+            });
+        }
+
+        function updateAlertsStats() {
+            const unreadCount = alertsData.filter(alert => !alert.isRead).length;
+            document.getElementById('unread-count').textContent = unreadCount;
+        }
+
+        function updateAlertNotification() {
+            const unreadCount = alertsData.filter(alert => !alert.isRead).length;
+            hasNewAlerts = unreadCount > 0;
+            document.getElementById('alert-notification').style.display = hasNewAlerts ? 'block' : 'none';
+        }
+
+        function markAllAlertsAsRead() {
+            alertsData.forEach(alert => alert.isRead = true);
+            renderAlerts();
+            updateAlertsStats();
+            updateAlertNotification();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            alertsData = [...mockAlerts];
+            updateLanguage();
+            switchTab('chat');
+            addMessage(translations[currentLanguage].welcome, true);
+            
+            // Language selector
+            document.getElementById('language-select').addEventListener('change', function(e) {
+                currentLanguage = e.target.value;
+                document.getElementById('language-select-mobile').value = currentLanguage;
+                updateLanguage();
+            });
+            
+            document.getElementById('language-select-mobile').addEventListener('change', function(e) {
+                currentLanguage = e.target.value;
+                document.getElementById('language-select').value = currentLanguage;
+                updateLanguage();
+            });
+            
+            // Mobile menu
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                isMobileMenuOpen = !isMobileMenuOpen;
+                const sidebar = document.getElementById('sidebar');
+                const menuIcon = document.getElementById('menu-icon');
+                const closeIcon = document.getElementById('close-icon');
+                
+                if (isMobileMenuOpen) {
+                    sidebar.classList.remove('hidden');
+                    menuIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('hidden', 'lg:block');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                }
+            });
+            
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    switchTab(tab);
+                    
+                    // Close mobile menu
+                    if (isMobileMenuOpen) {
+                        document.getElementById('mobile-menu-btn').click();
+                    }
+                });
+            });
+            
+            // Chat functionality
+            document.getElementById('send-btn').addEventListener('click', function() {
+                const input = document.getElementById('chat-input');
+                const message = input.value.trim();
+                if (message) {
+                    sendMessage(message);
+                    input.value = '';
+                }
+            });
+            
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('send-btn').click();
+                }
+            });
+            
+            // Quick questions
+            document.querySelectorAll('.quick-question-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('chat-input').value = this.textContent;
+                });
+            });
+            
+            // Health education category filters
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-filter').forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-outline');
+                    });
+                    
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary');
+                    
+                    selectedTopicCategory = this.dataset.category;
+                    loadHealthTopics();
+                });
+            });
+            
+            // Vaccination age group filters
+            document.querySelectorAll('.age-group-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.age-group-btn').forEach(b => {
+                        b.classList.remove('btn-primary', 'active');
+                        b.classList.add('btn-outline');
+                    });
+                    
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary', 'active');
+                    
+                    selectedVaccineAgeGroup = this.dataset.age;
+                    loadVaccines();
+                });
+            });
+            
+            // Symptoms checker
+            document.getElementById('check-symptoms-btn').addEventListener('click', analyzeSymptoms);
+            
+            // Symptom category filters
+            document.querySelectorAll('.symptom-category-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.symptom-category-filter').forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-outline');
+                    });
+                    
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary');
+                    
+                    // Filter symptoms (implementation would go here)
+                    loadSymptoms();
+                });
+            });
+            
+            // Alerts
+            document.getElementById('mark-all-read-btn').addEventListener('click', markAllAlertsAsRead);
+            
+            // Alert filters
+            document.querySelectorAll('.alert-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.alert-filter').forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-outline');
+                    });
+                    
+                    this.classList.remove('btn-outline');
+                    this.classList.add('btn-primary');
+                    
+                    // Filter implementation would go here
+                    renderAlerts();
+                });
+            });
+            
+            // Simulate periodic alert checks
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    hasNewAlerts = true;
+                    updateAlertNotification();
+                }
+            }, 30000);
+        });
+
+        // Global functions
+        window.backToSymptoms = backToSymptoms;
+    </script>
+</body>
+</html>
