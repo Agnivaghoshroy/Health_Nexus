@@ -1214,5 +1214,3 @@ export function AlertsPanel({ language }: AlertsPanelProps) {
     </div>
   );
 }
-
-// Taak- big code ends here
